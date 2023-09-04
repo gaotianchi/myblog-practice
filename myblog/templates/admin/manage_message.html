@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+管理留言
+{% endblock page_title %}
+
+{% block content %}
+<main>
+    <!-- <div class="metadata"> -->
+    <!-- <li class="meta-item" style="display: inline;"></li> -->
+    <!-- </div> -->
+    <div class="messages-items">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="message-items">
+            <li class="message-item">{{ loop.index }}</li>
+            <li class="message-item" style="display: inline;">{{ message.email }}</li>
+            <li class="message-item" style="display: inline;">{{ message.body }}</li>
+            <li class="message-item" style="display: inline;">{{ message.timestamp }}</li>
+            {% if message.post.id %}
+            <li class="message-item" style="display: inline;"><a
+                    href="{{ url_for('user.show_post', post_id=message.post.id) }}">{{ message.post.title }}</a></li>
+            {% endif %}
+            {% if message.site %}
+            <li class="message-item" style="display: inline;">{{ message.site }}</li>
+            {% endif %}
+            <form style="display: inline;"
+                action="{{ url_for('admin.delete_message', message_id=message.id, next=url_for('admin.manage_message')) }}"
+                method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" onclick="return confirm('确定要删除该留言吗？')">删除</button>
+            </form>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p>还没有留言</p>
+        {% endif %}
+    </div>
+</main>
+{% endblock content %}

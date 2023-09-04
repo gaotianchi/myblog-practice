@@ -1,12 +1,14 @@
 from datetime import datetime
 
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import Column, Integer, String, Text, ForeignKey, Boolean, DateTime
 from sqlalchemy.orm import relationship
 
 from myblog.extensions import db
 
 
-class Admin(db.Model):
+class Admin(db.Model, UserMixin):
     id = Column(Integer, primary_key=True)
     username = Column(String(20))
     password_hash = Column(String(128))
@@ -14,12 +16,26 @@ class Admin(db.Model):
     blog_sub_title = Column(String(100))
     about = Column(Text)
 
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def validate_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
 
 class Category(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String(10), unique=True)
 
     posts = relationship("Post", back_populates="category")
+
+    def delete(self):
+        default_category = Category.query.get(1)
+        posts = self.posts[:]
+        for post in posts:
+            post.category = default_category
+        db.session.delete(self)
+        db.session.commit()
 
 
 class Post(db.Model):
@@ -31,10 +47,10 @@ class Post(db.Model):
     category_id = Column(Integer, ForeignKey("category.id"))
     category = relationship("Category", back_populates="posts")
 
-    messages = relationship("Messageboard", back_populates="post")
+    messages = relationship("Message", back_populates="post")
 
 
-class Messageboard(db.Model):
+class Message(db.Model):
     id = Column(Integer, primary_key=True)
     email = Column(String(254))
     site = Column(String(255))
@@ -49,4 +65,5 @@ class Project(db.Model):
     id = Column(Integer, primary_key=True)
     title = Column(String(60))
     body = Column(Text)
+    url = Column(String(255))
     timestamp = Column(DateTime, default=datetime.utcnow)

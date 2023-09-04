@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+添加新文章
+{% endblock page_title %}
+
+{% block content %}
+<form method="post">
+    {{ form.csrf_token }}
+    {{ form.title.label }} <br>
+    {{ form.title }} <br>
+    {{ form.category.label }} <br>
+    {{ form.category }} <br>
+    {{ form.body.label }} <br>
+    {{ form.body }} <br>
+    {{ form.submit }}
+</form>
+
+{% endblock content %}
+
+{% block scripts %}
+{{ super() }}
+{{ ckeditor.load() }}
+{% endblock scripts %}

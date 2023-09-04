@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+管理文章
+{% endblock page_title %}
+
+
+{% block content %}
+<main>
+    <div class="metadata">
+        <div class="meta-item"><a href="{{ url_for('admin.new_post') }}">添加新文章</a></div>
+    </div>
+    <div class="posts-items">
+        {% if posts %}
+        {% for post in posts %}
+        <div class="post-items">
+            <li class="post-item" style="display: inline;">{{ loop.index }}</li>
+            <li class="post-item" style="display: inline;">{{ post.timestamp }}</li>
+            <li class="post-item" style="display: inline;"><a href="{{ url_for('user.show_post', post_id=post.id) }}">{{
+                    post.title }}</a></li>
+            <li class="post-item" style="display: inline;"><a
+                    href="{{ url_for('user.show_category', category_id=post.category.id) }}">{{ post.category.name }}</a>
+            </li>
+            <li class="post-item" style="display: inline;"><a
+                    href="{{ url_for('admin.edit_post', post_id=post.id) }}">编辑</a></li>
+            <li class="post-item" style="display: inline;">
+                <form style="display: inline;" action="{{ url_for('admin.delete_post', post_id=post.id, next=url_for('admin.manage_post')) }}"
+                    method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" onclick="return confirm('确定要删除该文章吗？')">删除</button>
+                </form>
+            </li>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p>还没有发布任何文章</p>
+        {% endif %}
+    </div>
+</main>
+
+{% endblock content %}

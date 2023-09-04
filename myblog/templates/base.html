@@ -6,19 +6,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-    <title>{% block title %}高天驰的个人博客{% endblock title %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block style_css %}{% endblock style_css %}
+    <title>高天驰的个人博客</title>
     {% endblock head %}
 </head>
 
 <body>
     <nav>
-        <li class="nav-item"><a href="#">主页</a></li>
-        <li class="nav-item"><a href="#">文章</a></li>
-        <li class="nav-item"><a href="#">留言板</a></li>
-        <li class="nav-item"><a href="#">项目</a></li>
+        <li class="nav-item" style="display: inline;"><a href="{{ url_for('user.home')}}">主页</a></li>
+        <li class="nav-item" style="display: inline;"><a href="{{ url_for('user.show_posts')}}">文章</a></li>
+        <li class="nav-item" style="display: inline;"><a href="{{ url_for('user.show_messages')}}">留言板</a></li>
+        <li class="nav-item" style="display: inline;"><a href="{{ url_for('user.show_projects')}}">项目</a></li>
+        {% if current_user.is_authenticated %}
+        <div class="dropdown">
+            <button>管理</button>
+            <div class="dropdown-content">
+                <a href="{{ url_for('admin.manage_post') }}">文章</a>
+                <a href="{{ url_for('admin.manage_category') }}">分类</a>
+                <a href="{{ url_for('admin.manage_message') }}">留言</a>
+                <a href="{{ url_for('admin.manage_project') }}">项目</a>
+            </div>
+        </div>
+        {% endif %}
     </nav>
     <h1>{% block page_title %}主页{% endblock page_title %}</h1>
-    
+
     {% block content %}
     Hello world
     {% endblock content %}
@@ -27,14 +40,18 @@
         <div class="links">
             <li class="link-item"><a href="#">GitHub</a></li>
             <li class="link-item"><a href="#">RSS</a></li>
+            {% if current_user.is_authenticated %}
+            <li><a href="{{ url_for('auth.logout', next=request.full_puth) }}">登出</a></li>
+            {% else %}
+            <li><a href="{{ url_for('auth.login', next=request.full_puth)}}">登录</a></li>
+            {% endif %}
         </div>
 
-        <!-- todo: 邮箱订阅表单 -->
+        <!-- TODO: 邮箱订阅表单 -->
 
         <p class="copyright">&copy;2023 高天驰的个人博客</p>
     </footer>
     {% block scripts %}
-    
     {% endblock scripts %}
 </body>
 

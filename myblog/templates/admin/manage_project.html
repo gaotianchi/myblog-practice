@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+管理项目
+{% endblock page_title %}
+
+{% block content %}
+<main>
+    <div class="projects-items">
+        <a href="{{ url_for('admin.new_project') }}">添加项目</a>
+        {% if projects %}
+        {% for project in projects %}
+        <div class="project-items">
+            <li class="project-item" style="display: inline;">{{ project.timestamp }}</li>
+            <li class="project-item" style="display: inline;"><a href="{{ project.url }}">{{ project.title }}</a></li>
+            <li class="project-item" style="display: inline;">{{ project.body }}</li>
+            <li class="meta-item" style="display: inline;"><a
+                    href="{{ url_for('admin.edit_project', project_id=project.id) }}">编辑</a></li>
+            <form style="display: inline;"
+                action="{{ url_for('admin.delete_project', project_id=project.id, next=url_for('admin.manage_project')) }}"
+                method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" onclick="return confirm('确定要删除该项目吗？')">删除</button>
+            </form>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p>还没有发布项目</p>
+        {% endif %}
+    </div>
+</main>
+{% endblock content %}

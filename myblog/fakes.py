@@ -3,7 +3,7 @@ import random
 from faker import Faker
 from sqlalchemy.exc import IntegrityError
 
-from myblog.models import Admin, Category, Post, Messageboard, Project
+from myblog.models import Admin, Category, Post, Message, Project
 from myblog.extensions import db
 
 
@@ -22,7 +22,7 @@ def fake_admin():
 
 
 def fake_categories(count=10):
-    category = Category(name="Default")
+    category = Category(name="默认")
     db.session.add(category)
 
     for _ in range(count):
@@ -48,7 +48,7 @@ def fake_posts(count=50):
 
 def fake_messages(count=100):
     for _ in range(count):
-        message = Messageboard(
+        message = Message(
             email=fake.email(),
             site=fake.url(),
             body=fake.sentence(),
@@ -65,6 +65,7 @@ def fake_projects(count=3):
             title=fake.sentence(),
             body=fake.sentence(),
             timestamp=fake.date_time_this_year(),
+            url=fake.url(),
         )
         db.session.add(project)
     db.session.commit()

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+管理分类
+{% endblock page_title %}
+
+{% block content %}
+<form method="post">
+    {{ form.csrf_token }}
+    {{ form.name.label }} <br>
+    {{ form.name }} <br>
+    {{ form.submit }}
+</form>
+{% endblock content %}

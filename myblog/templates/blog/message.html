@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+
+{% block page_title %}
+留言板
+{% endblock page_title %}
+
+{% block content %}
+<main>
+
+    <form method="post">
+
+        {{ form.csrf_token }}
+        {{ form.email.label }}<br>
+        {{ form.email }}<br>
+        {{ form.body.label }}<br>
+        {{ form.body }}<br>
+        {{ form.site.label }}<br>
+        {{ form.site }}<br>
+        {{ form.post_url.label }}<br>
+        {{ form.post_url }}<br>
+        {{ form.submit }}
+
+    </form>
+
+    <div class="messages-container">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="message-items">
+            <div class="message-metadata-items">
+                <li class="message-metadata" style="display: inline;">{{ message.timestamp }}</li>
+                {% if message.site %}
+                <li class="message-metadata" style="display: inline;"><a href="{{ message.site }}">个人网址</a>
+                </li>
+                {% endif %}
+                {% if message.post %}
+                <li class="message-metadata" style="display: inline;"><a
+                        href="{{ url_for( 'user.show_post', post_id=message.post.id )}}">{{ message.post.title }}</a>
+                </li>
+                {% endif %}
+            </div>
+            <p>{{ message.body }}</p>
+        </div>
+        {% endfor %}
+
+
+
+        {% else %}
+        <p>还没有任何留言。</p>
+        {% endif %}
+    </div>
+</main>
+
+{% endblock content %}

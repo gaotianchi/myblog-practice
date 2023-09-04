@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+{{ post.title }}
+{% endblock page_title %}
+
+{% block content %}
+<main>
+    <!-- 变量：时间戳、文章分类、文章提及次数 -->
+    <div class="metadata">
+        <li class="meta-item" style="display: inline;">{{ post.timestamp }}</li>
+        <li class="meta-item" style="display: inline;"><a href="{{ url_for( 'user.show_category', category_id=post.category.id )}}">{{ post.category.name }}</a></li>
+        <li class="meta-item" style="display: inline;"><a href="{{ url_for('user.show_messages', post_id=post.id) }}">{{ message_count }}<span>次提及</span></a></li>
+        {% if current_user.is_authenticated %}
+        <li class="meta-item" style="display: inline;"><a href="{{ url_for('admin.edit_post', post_id=post.id) }}">编辑</a></li>
+        <form style="display: inline;" action="{{ url_for('admin.delete_post', post_id=post.id, next=url_for('user.show_posts')) }}" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="submit" value="删除文章">
+        </form>
+        {% endif %}
+    </div>
+
+    <section>
+        {{ post.body|safe }}
+    </section>
+
+    <nav class="pre-nex">
+        {% if has_pre %}
+        <li class="pre" style="display: inline;"><a href="{{ url_for( 'user.show_post', post_id=post.id-1 )}}">上一篇</a></li>
+        {% endif %}
+        {% if has_next %}
+        <li class="next" style="display: inline;"><a href="{{ url_for( 'user.show_post', post_id=post.id+1 )}}">下一篇</a></li>
+        {% endif %}
+    </nav>
+</main>
+{% endblock content %}
