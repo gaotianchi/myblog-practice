@@ -22,6 +22,12 @@
         {{ form.submit }}
 
     </form>
+    <div class="metadata">
+        <li class="meta-item" style="display: inline;">{{ message_count }}<span>条留言</span></li>
+        <!-- <li class="meta-item" style="display: inline;"></li> -->
+        <!-- <li class="meta-item" style="display: inline;"></li> -->
+        <!-- <li class="meta-item" style="display: inline;"></li> -->
+    </div>
 
     <div class="messages-container">
         {% if messages %}

@@ -9,21 +9,33 @@
     <div class="projects-items">
         <a href="{{ url_for('admin.new_project') }}">添加项目</a>
         {% if projects %}
-        {% for project in projects %}
-        <div class="project-items">
-            <li class="project-item" style="display: inline;">{{ project.timestamp }}</li>
-            <li class="project-item" style="display: inline;"><a href="{{ project.url }}">{{ project.title }}</a></li>
-            <li class="project-item" style="display: inline;">{{ project.body }}</li>
-            <li class="meta-item" style="display: inline;"><a
-                    href="{{ url_for('admin.edit_project', project_id=project.id) }}">编辑</a></li>
-            <form style="display: inline;"
-                action="{{ url_for('admin.delete_project', project_id=project.id, next=url_for('admin.manage_project')) }}"
-                method="post">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <button type="submit" onclick="return confirm('确定要删除该项目吗？')">删除</button>
-            </form>
-        </div>
-        {% endfor %}
+        <table>
+            <tr>
+                <th>序号</th>
+                <th>日期</th>
+                <th>项目名称</th>
+                <th>编辑</th>
+                <th>删除</th>
+            </tr>
+            {% for project in projects %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ project.timestamp }}</td>
+                <td><a href="{{ project.url }}">{{ project.title }}</a></td>
+                <td><a href="{{ url_for('admin.edit_project', project_id=project.id) }}">编辑</a></td>
+                <td>
+                    <form style="display: inline;"
+                        action="{{ url_for('admin.delete_project', project_id=project.id, next=url_for('admin.manage_project')) }}"
+                        method="post">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" onclick="return confirm('确定要删除该项目吗？')">删除</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+
         {% else %}
         <p>还没有发布项目</p>
         {% endif %}

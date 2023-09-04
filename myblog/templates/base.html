@@ -38,12 +38,12 @@
 
     <footer>
         <div class="links">
-            <li class="link-item"><a href="#">GitHub</a></li>
-            <li class="link-item"><a href="#">RSS</a></li>
+            <li class="link-item" style="display: inline;"><a href="#">GitHub</a></li>
+            <li class="link-item" style="display: inline;"><a href="#">RSS</a></li>
             {% if current_user.is_authenticated %}
-            <li><a href="{{ url_for('auth.logout', next=request.full_puth) }}">登出</a></li>
+            <li style="display: inline;"><a href="{{ url_for('auth.logout', next=request.full_puth) }}">登出</a></li>
             {% else %}
-            <li><a href="{{ url_for('auth.login', next=request.full_puth)}}">登录</a></li>
+            <li style="display: inline;"><a href="{{ url_for('auth.login', next=request.full_puth)}}">登录</a></li>
             {% endif %}
         </div>
 

@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, current_app, request, redirect, ur
 from myblog.models import Post, Category, Message, Project
 from myblog.forms import MessageForm
 from myblog.extensions import db
+from myblog.utlis import page_break
 
 
 user_bp = Blueprint("user", __name__)
@@ -16,19 +17,14 @@ def home():
 @user_bp.route("/posts", defaults={"page": 1})
 @user_bp.route("/posts/<int:page>")
 def show_posts(page):
-    posts = Post.query.order_by(Post.timestamp.desc()).all()
-
-    number_of_posts_per_page = current_app.config["NUMBER_POST_PER_PAGE"]
-
-    start_post = number_of_posts_per_page * (page - 1)
-    end_post = start_post + number_of_posts_per_page - 1
-
-    page_posts = posts[start_post:end_post]
-
-    if len(posts) % number_of_posts_per_page == 0:
-        number_of_page = len(posts) // number_of_posts_per_page
+    filter = request.args.get("filter")
+    if filter == "timestamp":
+        posts = Post.query.order_by(Post.timestamp.desc()).all()
     else:
-        number_of_page = (len(posts) // number_of_posts_per_page) + 1
+        posts = Post.query.order_by(Post.mention.desc()).all()
+
+    page_posts = page_break(posts, page).get("page_items")
+    number_of_page = page_break(posts, page).get("number_of_page")
 
     return render_template(
         "blog/posts.html", posts=page_posts, page_number=number_of_page
@@ -58,21 +54,17 @@ def show_post(post_id):
 
 @user_bp.route("/category/<int:category_id>")
 def show_category(category_id):
-    number_of_posts_per_page = current_app.config["NUMBER_POST_PER_PAGE"]
+    filter = request.args.get("filter")
     page = request.args.get("page", 1, type=int)
 
     category = Category.query.get_or_404(category_id)
-    posts = Post.query.with_parent(category).order_by(Post.timestamp.desc()).all()
-
-    start_post = number_of_posts_per_page * (page - 1)
-    end_post = start_post + number_of_posts_per_page - 1
-
-    page_posts = posts[start_post:end_post]
-
-    if len(posts) % number_of_posts_per_page == 0:
-        number_of_page = len(posts) // number_of_posts_per_page
+    if filter == "timestamp":
+        posts = Post.query.with_parent(category).order_by(Post.timestamp.desc()).all()
     else:
-        number_of_page = (len(posts) // number_of_posts_per_page) + 1
+        posts = Post.query.with_parent(category).order_by(Post.mention.desc()).all()
+
+    page_posts = page_break(posts, page).get("page_items")
+    number_of_page = page_break(posts, page).get("number_of_page")
 
     return render_template(
         "blog/category.html",
@@ -86,6 +78,7 @@ def show_category(category_id):
 @user_bp.route("/messages/<int:post_id>", methods=["GET", "POST"])
 def show_messages(post_id):
     messages = Message.query.order_by(Message.timestamp.desc()).all()
+    message_count = len(messages)
     if post_id:
         messages = (
             Message.query.filter_by(post_id=post_id)
@@ -100,15 +93,18 @@ def show_messages(post_id):
         post_url = form.post_url.data
 
         # TODO 验证 post_url 的有效性，如无效则发送 flash 消息提醒用户.
-
-        post = Post.query.get_or_404(int(post_url.split("/").pop()))
+        post = None
+        if post_url:
+            post = Post.query.get_or_404(int(post_url.split("/").pop()))
         message = Message(email=email, body=body, site=site, post=post)
         db.session.add(message)
         db.session.commit()
         return redirect(url_for("user.show_messages"))
     if post_id:
         form.post_url.data = request.host_url + "post" + "/" + str(post_id)
-    return render_template("blog/message.html", form=form, messages=messages)
+    return render_template(
+        "blog/message.html", form=form, messages=messages, message_count=message_count
+    )
 
 
 @user_bp.route("/projects")

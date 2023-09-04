@@ -24,3 +24,19 @@ def allowed_file(filename):
         and filename.rsplit(".", 1)[1].lower()
         in current_app.config["BLUELOG_ALLOWED_IMAGE_EXTENSIONS"]
     )
+
+
+def page_break(total_items, current_page=1, number_per_page=10):
+    if not current_page:
+        current_page = 1
+    start = number_per_page * (int(current_page) - 1)
+    end = start + number_per_page
+
+    page_items = total_items[start:end]
+
+    if len(total_items) % number_per_page == 0:
+        number_of_page = len(total_items) // number_per_page
+    else:
+        number_of_page = (len(total_items) // number_per_page) + 1
+
+    return dict(page_items=page_items, number_of_page=number_of_page)

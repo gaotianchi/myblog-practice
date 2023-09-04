@@ -55,6 +55,7 @@ def fake_messages(count=100):
             timestamp=fake.date_time_this_year(),
             post=Post.query.get(random.randint(1, Post.query.count())),
         )
+        message.update_post()
         db.session.add(message)
     db.session.commit()
 

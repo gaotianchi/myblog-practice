@@ -1,9 +1,9 @@
-from flask import Blueprint, render_template, redirect, url_for
+from flask import Blueprint, render_template, redirect, url_for, request
 from flask_login import login_required
 
 from myblog.models import Post, Category, Message, Project
 from myblog.extensions import db
-from myblog.utlis import redirect_back
+from myblog.utlis import redirect_back, page_break
 from myblog.forms import PostForm, ProjectForm, CategoryForm
 
 
@@ -22,9 +22,19 @@ def delete_post(post_id):
 @admin_bp.route("/post/manage")
 @login_required
 def manage_post():
-    posts = Post.query.order_by(Post.timestamp.desc()).all()
+    filter = request.args.get("filter")
+    if filter == "timestamp":
+        posts = Post.query.order_by(Post.timestamp.desc()).all()
+    else:
+        posts = Post.query.order_by(Post.mention.desc()).all()
 
-    return render_template("admin/manage_post.html", posts=posts)
+    page = request.args.get("page")
+    page_posts = page_break(posts, page).get("page_items")
+    number_of_page = page_break(posts, page).get("number_of_page")
+
+    return render_template(
+        "admin/manage_post.html", posts=page_posts, page_number=number_of_page
+    )
 
 
 @admin_bp.route("/post/new", methods=["GET", "POST"])
@@ -108,8 +118,18 @@ def delete_category(category_id):
 @login_required
 def manage_message():
     messages = Message.query.order_by(Message.timestamp.desc()).all()
+    message_count = len(messages)
+    page = request.args.get("page")
 
-    return render_template("admin/manage_message.html", messages=messages)
+    page_messages = page_break(messages, page).get("page_items")
+    number_of_page = page_break(messages, page).get("number_of_page")
+
+    return render_template(
+        "admin/manage_message.html",
+        messages=page_messages,
+        message_count=message_count,
+        page_number=number_of_page,
+    )
 
 
 @admin_bp.route("/message/<message_id>/delete", methods=["GET", "POST"])

@@ -9,17 +9,30 @@
 <a href="{{ url_for('admin.new_category') }}">添加分类</a>
 <div class="categories-items">
     {% if categories %}
-    {% for category in categories %}
-    <div class="category-items">
-        <li class="category-item" style="display: inline;"><a href="{{ url_for('user.show_category', category_id=category.id) }}">{{ category.name }}</a></li>
-        <li class="category-item" style="display: inline;"><a href="{{ url_for('admin.edit_category', category_id=category.id) }}">编辑</a></li>
-        <form  style="display: inline;" action="{{ url_for('admin.delete_category', category_id=category.id) }}" method="post">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <button type="submit" onclick="return confirm('确定要删除该分类吗？')">删除</button>
-        </form>
-
-    </div>
-    {% endfor %}    
+    
+    <table>
+        <tr>
+            <th>序号</th>
+            <th>名称</th>
+            <th>编辑</th>
+            <th>删除</th>
+        </tr>
+        {% for category in categories %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td><a href="{{ url_for('user.show_category', category_id=category.id) }}">{{ category.name }}</a></td>
+            <td><a href="{{ url_for('admin.edit_category', category_id=category.id) }}">编辑</a></td>
+            <td>
+                <form style="display: inline;" action="{{ url_for('admin.delete_category', category_id=category.id) }}"
+                    method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" onclick="return confirm('确定要删除该分类吗？')">删除</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    
     {% endif %}
 </div>
 {% endblock content %}

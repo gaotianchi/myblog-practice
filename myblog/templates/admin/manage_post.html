@@ -8,30 +8,53 @@
 {% block content %}
 <main>
     <div class="metadata">
-        <div class="meta-item"><a href="{{ url_for('admin.new_post') }}">添加新文章</a></div>
+        <div class="meta-item" style="display: inline;"><a
+                href="{{ url_for('admin.manage_post', filter='timestamp')}}">最新</a></div>
+        <div class="meta-item" style="display: inline;"><a
+                href="{{ url_for('admin.manage_post', filter='mention')}}">最热</a></div>
+        <div class="meta-item" style="display: inline;"><a href="{{ url_for('admin.new_post') }}">添加新文章</a></div>
     </div>
     <div class="posts-items">
         {% if posts %}
-        {% for post in posts %}
-        <div class="post-items">
-            <li class="post-item" style="display: inline;">{{ loop.index }}</li>
-            <li class="post-item" style="display: inline;">{{ post.timestamp }}</li>
-            <li class="post-item" style="display: inline;"><a href="{{ url_for('user.show_post', post_id=post.id) }}">{{
-                    post.title }}</a></li>
-            <li class="post-item" style="display: inline;"><a
-                    href="{{ url_for('user.show_category', category_id=post.category.id) }}">{{ post.category.name }}</a>
-            </li>
-            <li class="post-item" style="display: inline;"><a
-                    href="{{ url_for('admin.edit_post', post_id=post.id) }}">编辑</a></li>
-            <li class="post-item" style="display: inline;">
-                <form style="display: inline;" action="{{ url_for('admin.delete_post', post_id=post.id, next=url_for('admin.manage_post')) }}"
-                    method="post">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <button type="submit" onclick="return confirm('确定要删除该文章吗？')">删除</button>
-                </form>
-            </li>
-        </div>
-        {% endfor %}
+
+        <table>
+            <tr>
+                <th>序号</th>
+                <th>标题</th>
+                <th>分类</th>
+                <th>留言</th>
+                <th>日期</th>
+                <th>编辑</th>
+                <th>删除</th>
+            </tr>
+            {% for post in posts %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td><a href="{{ url_for('user.show_post', post_id=post.id) }}">{{ post.title }}</a></td>
+                <td><a href="{{ url_for('user.show_category', category_id=post.category.id) }}">{{ post.category.name
+                        }}</a></td>
+                <td><a href="{{ url_for('user.show_messages', post_id=post.id) }}">{{ post.mention }}</a></td>
+                <td>{{ post.timestamp }}</td>
+                <td><a href="{{ url_for('admin.edit_post', post_id=post.id) }}">编辑</a></td>
+                <td>
+                    <form style="display: inline;"
+                        action="{{ url_for('admin.delete_post', post_id=post.id, next=url_for('admin.manage_post')) }}"
+                        method="post">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" onclick="return confirm('确定要删除该文章吗？')">删除</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <nav class="pagination">
+            <!-- 变量： 导航按钮数量-->
+            <!-- 链接：页码指定页面 -->
+            {% for page in range(page_number) %}
+            <li style="display: inline;"><a href="{{ url_for('admin.manage_post', page=page+1, filter=request.args.get('filter'))}}">{{ page+1 }}</a></li>
+            {% endfor %}
+        </nav>
+
         {% else %}
         <p>还没有发布任何文章</p>
         {% endif %}

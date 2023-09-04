@@ -2,7 +2,7 @@ from datetime import datetime
 
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, Boolean, DateTime
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 
 from myblog.extensions import db
@@ -43,6 +43,7 @@ class Post(db.Model):
     title = Column(String(60))
     body = Column(Text)
     timestamp = Column(DateTime, default=datetime.utcnow)
+    mention = Column(Integer, default=0)
 
     category_id = Column(Integer, ForeignKey("category.id"))
     category = relationship("Category", back_populates="posts")
@@ -59,6 +60,10 @@ class Message(db.Model):
 
     post_id = Column(Integer, ForeignKey("post.id"))
     post = relationship("Post", back_populates="messages")
+
+    def update_post(self):
+        if self.post.id:
+            self.post.mention += 1
 
 
 class Project(db.Model):
