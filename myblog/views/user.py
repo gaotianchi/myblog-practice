@@ -1,7 +1,14 @@
-from flask import Blueprint, render_template, current_app, request, redirect, url_for
+from flask import (
+    Blueprint,
+    flash,
+    render_template,
+    request,
+    redirect,
+    url_for,
+)
 
-from myblog.models import Post, Category, Message, Project
-from myblog.forms import MessageForm
+from myblog.models import Post, Category, Message, Project, Subscriber
+from myblog.forms import MessageForm, SubscribeForm
 from myblog.extensions import db
 from myblog.utlis import page_break
 
@@ -9,19 +16,27 @@ from myblog.utlis import page_break
 user_bp = Blueprint("user", __name__)
 
 
-@user_bp.route("/")
+@user_bp.route("/", methods=["GET", "POST"])
 def home():
-    return render_template("blog/home.html")
+    form = SubscribeForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        subscriber = Subscriber(email=email)
+        db.session.add(subscriber)
+        db.session.commit()
+        flash("成功订阅博客！")
+        return redirect(url_for("user.home"))
+    return render_template("blog/home.html", form=form)
 
 
 @user_bp.route("/posts", defaults={"page": 1})
 @user_bp.route("/posts/<int:page>")
 def show_posts(page):
     filter = request.args.get("filter")
-    if filter == "timestamp":
-        posts = Post.query.order_by(Post.timestamp.desc()).all()
-    else:
+    if filter == "mention":
         posts = Post.query.order_by(Post.mention.desc()).all()
+    else:
+        posts = Post.query.order_by(Post.timestamp.desc()).all()
 
     page_posts = page_break(posts, page).get("page_items")
     number_of_page = page_break(posts, page).get("number_of_page")
@@ -58,10 +73,10 @@ def show_category(category_id):
     page = request.args.get("page", 1, type=int)
 
     category = Category.query.get_or_404(category_id)
-    if filter == "timestamp":
-        posts = Post.query.with_parent(category).order_by(Post.timestamp.desc()).all()
-    else:
+    if filter == "mention":
         posts = Post.query.with_parent(category).order_by(Post.mention.desc()).all()
+    else:
+        posts = Post.query.with_parent(category).order_by(Post.timestamp.desc()).all()
 
     page_posts = page_break(posts, page).get("page_items")
     number_of_page = page_break(posts, page).get("number_of_page")
@@ -92,13 +107,19 @@ def show_messages(post_id):
         site = form.site.data
         post_url = form.post_url.data
 
-        # TODO 验证 post_url 的有效性，如无效则发送 flash 消息提醒用户.
-        post = None
         if post_url:
-            post = Post.query.get_or_404(int(post_url.split("/").pop()))
+            import re
+
+            if re.match(f"{request.host_url}post/\d+", post_url):
+                post = Post.query.get_or_404(int(post_url.split("/").pop()))
+            else:
+                post = None
+                flash(f"如需引用文章，请输入文章链接！例如：{request.host_url}post/7")
+
         message = Message(email=email, body=body, site=site, post=post)
         db.session.add(message)
         db.session.commit()
+        flash("成功添加留言！")
         return redirect(url_for("user.show_messages"))
     if post_id:
         form.post_url.data = request.host_url + "post" + "/" + str(post_id)

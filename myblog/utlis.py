@@ -1,3 +1,4 @@
+import re
 from urllib.parse import urlparse, urljoin
 
 from flask import request, redirect, url_for, current_app
@@ -40,3 +41,12 @@ def page_break(total_items, current_page=1, number_per_page=10):
         number_of_page = (len(total_items) // number_per_page) + 1
 
     return dict(page_items=page_items, number_of_page=number_of_page)
+
+
+# as per recommendation from @freylis, compile once only
+
+
+def cleanhtml(raw_html) -> str:
+    pattern = re.compile("<.*?>")
+    cleantext = re.sub(pattern, "", raw_html)
+    return cleantext

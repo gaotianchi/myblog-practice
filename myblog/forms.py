@@ -57,3 +57,8 @@ class MessageForm(FlaskForm):
     site = StringField("个人网址", validators=[Optional(), URL(), Length(0, 255)])
     post_url = StringField("提及", validators=[Optional(), URL(), Length(0, 255)])
     submit = SubmitField()
+
+
+class SubscribeForm(FlaskForm):
+    email = StringField("邮箱", validators=[DataRequired(), Email(), Length(1, 254)])
+    submit = SubmitField("订阅")

@@ -18,7 +18,7 @@
 
         {% for post in posts %}
         <div class="post-items">
-            <li class="post-item" style="display: inline;">{{ post.timestamp }}</li>
+            <li class="post-item" style="display: inline;">{{ post.timestamp.strftime("%Y/%m/%d") }}</li>
             <li class="post-item" style="display: inline;"><a href="{{ url_for( 'user.show_post', post_id=post.id )}}">{{ post.title }}</a></li>
             <li class="post-item" style="display: inline;"><a href="{{ url_for( 'user.show_category', category_id=post.category.id, filter=request.args.get('filter')) }}">{{ category.name }}</a></li>
             <li class="post-item" style="display: inline;"><a href="{{ url_for( 'user.show_messages', post_id=post.id )}}">{{ post.mention }}<span>次提及</span></a></li>

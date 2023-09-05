@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, url_for
+from flask import Blueprint, redirect, render_template, url_for, flash
 from flask_login import current_user, login_user, login_required, logout_user
 
 from myblog.forms import LoginForm
@@ -21,9 +21,15 @@ def login():
         remember = form.remember.data
 
         admin = Admin.query.first()
-        if username == admin.username and admin.validate_password(password):
-            login_user(admin, remember)
-            return redirect_back()
+        if admin:
+            if username == admin.username and admin.validate_password(password):
+                login_user(admin, remember)
+                flash("登录成功！欢迎 %s " % username)
+                return redirect_back()
+            flash("用户名或者密码错误！")
+        else:
+            flash("账户不存在！")
+
     return render_template("auth/login.html", form=form)
 
 

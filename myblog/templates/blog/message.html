@@ -24,9 +24,6 @@
     </form>
     <div class="metadata">
         <li class="meta-item" style="display: inline;">{{ message_count }}<span>条留言</span></li>
-        <!-- <li class="meta-item" style="display: inline;"></li> -->
-        <!-- <li class="meta-item" style="display: inline;"></li> -->
-        <!-- <li class="meta-item" style="display: inline;"></li> -->
     </div>
 
     <div class="messages-container">
@@ -34,7 +31,7 @@
         {% for message in messages %}
         <div class="message-items">
             <div class="message-metadata-items">
-                <li class="message-metadata" style="display: inline;">{{ message.timestamp }}</li>
+                <li class="message-metadata" style="display: inline;">{{ message.timestamp.strftime("%Y/%m/%d") }}</li>
                 {% if message.site %}
                 <li class="message-metadata" style="display: inline;"><a href="{{ message.site }}">个人网址</a>
                 </li>

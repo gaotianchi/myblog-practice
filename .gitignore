@@ -1,9 +1,8 @@
 .env
 .trash
 .venv
-
 data.db
-
+uploads/*
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

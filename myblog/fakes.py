@@ -3,7 +3,7 @@ import random
 from faker import Faker
 from sqlalchemy.exc import IntegrityError
 
-from myblog.models import Admin, Category, Post, Message, Project
+from myblog.models import Admin, Category, Post, Message, Project, Subscriber
 from myblog.extensions import db
 
 
@@ -69,4 +69,14 @@ def fake_projects(count=3):
             url=fake.url(),
         )
         db.session.add(project)
+    db.session.commit()
+
+
+def fake_subscribers(count=30):
+    for _ in range(count):
+        subscriber = Subscriber(
+            email=fake.email(),
+            timestamp=fake.date_time_this_year(),
+        )
+        db.session.add(subscriber)
     db.session.commit()

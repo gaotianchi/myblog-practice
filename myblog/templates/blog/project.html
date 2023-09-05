@@ -12,7 +12,7 @@
 
         {% for project in projects %}
         <div class="project-items">
-            <li class="project-item" style="display: inline;">{{ project.timestamp }}</li>
+            <li class="project-item" style="display: inline;">{{ project.timestamp.strftime("%Y/%m/%d") }}</li>
             <li class="project-item" style="display: inline;"><a href="{{ project.url }}">{{ project.title }}</a></li>
             <li class="project-item" style="display: inline;">{{ project.body }}</li>
         </div>

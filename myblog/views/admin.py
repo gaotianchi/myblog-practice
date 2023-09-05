@@ -1,10 +1,23 @@
-from flask import Blueprint, render_template, redirect, url_for, request
+import os
+from flask import (
+    Blueprint,
+    current_app,
+    flash,
+    render_template,
+    redirect,
+    send_from_directory,
+    url_for,
+    request,
+)
 from flask_login import login_required
+from flask_ckeditor import upload_success, upload_fail
 
-from myblog.models import Post, Category, Message, Project
+
+from myblog.models import Post, Category, Message, Project, Subscriber, Admin
 from myblog.extensions import db
-from myblog.utlis import redirect_back, page_break
+from myblog.utlis import allowed_file, redirect_back, page_break, cleanhtml
 from myblog.forms import PostForm, ProjectForm, CategoryForm
+from myblog.email import send_new_post_mail
 
 
 admin_bp = Blueprint("admin", __name__)
@@ -16,6 +29,7 @@ def delete_post(post_id):
     post = db.get_or_404(Post, post_id)
     db.session.delete(post)
     db.session.commit()
+    flash("成功删除文章 %s " % post.title)
     return redirect_back()
 
 
@@ -23,10 +37,10 @@ def delete_post(post_id):
 @login_required
 def manage_post():
     filter = request.args.get("filter")
-    if filter == "timestamp":
-        posts = Post.query.order_by(Post.timestamp.desc()).all()
-    else:
+    if filter == "mention":
         posts = Post.query.order_by(Post.mention.desc()).all()
+    else:
+        posts = Post.query.order_by(Post.timestamp.desc()).all()
 
     page = request.args.get("page")
     page_posts = page_break(posts, page).get("page_items")
@@ -48,6 +62,15 @@ def new_post():
         post = Post(title=title, category=category, body=body)
         db.session.add(post)
         db.session.commit()
+        subscribers = [subscriber.email for subscriber in Subscriber.query.all()]
+        body = cleanhtml(post.body)[0:300]
+        blog_title = Admin.query.first().blog_title
+        send_new_post_mail(
+            subject="%s——%s发布了新文章" % (post.title, blog_title),
+            to=subscribers,
+            post=post,
+            body=body,
+        )
 
         return redirect(url_for("user.show_post", post_id=post.id))
     return render_template("admin/new_post.html", form=form)
@@ -109,8 +132,10 @@ def edit_category(category_id):
 def delete_category(category_id):
     category = Category.query.get_or_404(category_id)
     if category.id == 1:
+        flash("无法删除默认分类 %s" % category.name)
         return redirect(url_for("admin.manage_category"))
     category.delete()
+    flash(f"成功删除{category.name}")
     return redirect(url_for("admin.manage_category"))
 
 
@@ -138,6 +163,7 @@ def delete_message(message_id):
     message = Message.query.get(message_id)
     db.session.delete(message)
     db.session.commit()
+    flash(f"成功删除用户 {message.email} 的留言")
     return redirect_back()
 
 
@@ -156,6 +182,8 @@ def delete_project(project_id):
 
     db.session.delete(project)
     db.session.commit()
+
+    flash(f"成功删除项目 {project.title}")
 
     return redirect_back()
 
@@ -192,3 +220,18 @@ def new_project():
 
         return redirect(url_for("user.show_projects"))
     return render_template("admin/new_project.html", form=form)
+
+
+@admin_bp.route("/uploads/<path:filename>")
+def get_image(filename):
+    return send_from_directory(current_app.config["BLUELOG_UPLOAD_PATH"], filename)
+
+
+@admin_bp.route("/upload", methods=["POST"])
+def upload_image():
+    f = request.files.get("upload")
+    if not allowed_file(f.filename):
+        return upload_fail("只能上传图片！")
+    f.save(os.path.join(current_app.config["BLUELOG_UPLOAD_PATH"], f.filename))
+    url = url_for("admin.get_image", filename=f.filename)
+    return upload_success(url, f.filename)

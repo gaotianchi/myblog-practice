@@ -72,3 +72,9 @@ class Project(db.Model):
     body = Column(Text)
     url = Column(String(255))
     timestamp = Column(DateTime, default=datetime.utcnow)
+
+
+class Subscriber(db.Model):
+    id = Column(Integer, primary_key=True)
+    email = Column(String(60))
+    timestamp = Column(DateTime, default=datetime.utcnow)

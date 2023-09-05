@@ -8,14 +8,14 @@
 <main>
     <!-- 变量：时间戳、文章分类、文章提及次数 -->
     <div class="metadata">
-        <li class="meta-item" style="display: inline;">{{ post.timestamp }}</li>
+        <li class="meta-item" style="display: inline;">{{ post.timestamp.strftime("%Y/%m/%d") }}</li>
         <li class="meta-item" style="display: inline;"><a href="{{ url_for( 'user.show_category', category_id=post.category.id )}}">{{ post.category.name }}</a></li>
         <li class="meta-item" style="display: inline;"><a href="{{ url_for('user.show_messages', post_id=post.id) }}">{{ message_count }}<span>次提及</span></a></li>
         {% if current_user.is_authenticated %}
         <li class="meta-item" style="display: inline;"><a href="{{ url_for('admin.edit_post', post_id=post.id) }}">编辑</a></li>
         <form style="display: inline;" action="{{ url_for('admin.delete_post', post_id=post.id, next=url_for('user.show_posts')) }}" method="post">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <input type="submit" value="删除文章">
+            <button type="submit" onclick="return confirm('确定要删除该文章吗？')">删除</button>
         </form>
         {% endif %}
     </div>

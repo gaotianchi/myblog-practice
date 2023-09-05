@@ -17,4 +17,11 @@
         </p>
     </section>
 </main>
+<div class="subscribe">
+    <form method="post">
+        {{ form.csrf_token }}
+        {{ form.email }}
+        {{ form.submit }}
+    </form>
+</div>
 {% endblock content %}

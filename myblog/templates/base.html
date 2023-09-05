@@ -31,6 +31,14 @@
         {% endif %}
     </nav>
     <h1>{% block page_title %}主页{% endblock page_title %}</h1>
+    {% if get_flashed_messages() %}
+    <div class="messages-items">
+        {% for flash_message in get_flashed_messages() %}
+        <div class="message-item">{{ flash_message }}</div>
+        {% endfor %}
+    </div>
+
+    {% endif %}
 
     {% block content %}
     Hello world
@@ -46,8 +54,6 @@
             <li style="display: inline;"><a href="{{ url_for('auth.login', next=request.full_puth)}}">登录</a></li>
             {% endif %}
         </div>
-
-        <!-- TODO: 邮箱订阅表单 -->
 
         <p class="copyright">&copy;2023 高天驰的个人博客</p>
     </footer>

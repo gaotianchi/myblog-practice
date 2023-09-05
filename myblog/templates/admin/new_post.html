@@ -21,4 +21,5 @@
 {% block scripts %}
 {{ super() }}
 {{ ckeditor.load() }}
+{{ ckeditor.config(name='body') }}
 {% endblock scripts %}

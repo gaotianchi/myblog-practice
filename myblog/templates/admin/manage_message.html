@@ -33,7 +33,7 @@
                 <td>{% if message.site %}<a href="{{ message.site }}">{{ message.site }}</a>{% else %}无{% endif %}</td>
                 <td>{% if message.post.id %}<a href="{{ url_for('user.show_post', post_id=message.post.id) }}">{{
                         message.post.title }}</a>{% else %}无{% endif %}</td>
-                <td>{{ message.timestamp }}</td>
+                <td>{{ message.timestamp.strftime("%Y/%m/%d") }}</td>
                 <td>
                     <form style="display: inline;"
                         action="{{ url_for('admin.delete_message', message_id=message.id, next=url_for('admin.manage_message')) }}"
