@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 
+{% block style_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/message.css') }}">
+{% endblock style_css %}
 
 {% block page_title %}
 留言板
@@ -9,21 +12,29 @@
 <main>
 
     <form method="post">
-
         {{ form.csrf_token }}
-        {{ form.email.label }}<br>
-        {{ form.email }}<br>
-        {{ form.body.label }}<br>
-        {{ form.body }}<br>
-        {{ form.site.label }}<br>
-        {{ form.site }}<br>
-        {{ form.post_url.label }}<br>
-        {{ form.post_url }}<br>
-        {{ form.submit }}
+        <div class="form-items">
+            {{ form.email.label }}
+            {{ form.email }}
+        </div>
+        <div class="form-items">
+            {{ form.body.label }}
+            {{ form.body }}
+        </div>
+        <div class="form-items">
+            {{ form.site.label }}
+            {{ form.site }}
+        </div>
+        <div class="form-items">
+            {{ form.post_url.label }}
+            {{ form.post_url }}
+        </div>
+        <div class="form-items">{{ form.submit }}</div>
+
 
     </form>
     <div class="metadata">
-        <li class="meta-item" style="display: inline;">{{ message_count }}<span>条留言</span></li>
+        <li class="meta-item" style="display: inline;"><a href="{{ url_for('user.show_messages') }}">{{ message_count }}条留言</a></li>
     </div>
 
     <div class="messages-container">

@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
     {% block style_css %}{% endblock style_css %}
     <title>高天驰的个人博客</title>
     {% endblock head %}
@@ -22,10 +22,10 @@
         <div class="dropdown">
             <button>管理</button>
             <div class="dropdown-content">
-                <a href="{{ url_for('admin.manage_post') }}">文章</a>
-                <a href="{{ url_for('admin.manage_category') }}">分类</a>
-                <a href="{{ url_for('admin.manage_message') }}">留言</a>
-                <a href="{{ url_for('admin.manage_project') }}">项目</a>
+                <li><a href="{{ url_for('admin.manage_post') }}">文章</a></li>
+                <li><a href="{{ url_for('admin.manage_category') }}">分类</a></li>
+                <li><a href="{{ url_for('admin.manage_message') }}">留言</a></li>
+                <li><a href="{{ url_for('admin.manage_project') }}">项目</a></li>
             </div>
         </div>
         {% endif %}
@@ -34,7 +34,7 @@
     {% if get_flashed_messages() %}
     <div class="messages-items">
         {% for flash_message in get_flashed_messages() %}
-        <div class="message-item">{{ flash_message }}</div>
+        <div class="message-item"><span>{{ flash_message }}</span></div>
         {% endfor %}
     </div>
 
@@ -47,6 +47,7 @@
     <footer>
         <div class="links">
             <li class="link-item" style="display: inline;"><a href="#">GitHub</a></li>
+            <!-- TODO RSS 功能 -->
             <li class="link-item" style="display: inline;"><a href="#">RSS</a></li>
             {% if current_user.is_authenticated %}
             <li style="display: inline;"><a href="{{ url_for('auth.logout', next=request.full_puth) }}">登出</a></li>
@@ -55,7 +56,7 @@
             {% endif %}
         </div>
 
-        <p class="copyright">&copy;2023 高天驰的个人博客</p>
+        <span class="copyright">&copy;2023 高天驰的个人博客</span>
     </footer>
     {% block scripts %}
     {% endblock scripts %}

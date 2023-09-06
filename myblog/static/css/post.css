@@ -1,0 +1,42 @@
+.metadata {
+    font-size: small;
+    font-style: italic;
+    margin-bottom: 5px;
+}
+
+main > div > li:nth-child(4) > a {
+    display: inline-block;
+    padding: 0;
+    color: #0056b3;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+
+main > div > form > button {
+    display: inline-block;
+    padding: 0;
+    background: none;
+    border: none;
+    color: #007bff;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: small;
+    font-style: italic;
+    margin-bottom: 5px;
+ }
+ 
+ .pre-nex {
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+    padding: 0;
+ }
+ 
+ .pre-nex .pre {
+    float: left;
+ }
+ 
+ .pre-nex .next {
+    float: right;
+ }
