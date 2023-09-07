@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 
+
+{% block style_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/manage.css') }}">
+{% endblock style_css %}
+
 {% block page_title %}
 管理项目
 {% endblock page_title %}

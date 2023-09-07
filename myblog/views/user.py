@@ -120,7 +120,11 @@ def show_messages(post_id):
         db.session.add(message)
         db.session.commit()
         flash("成功添加留言！")
-        return redirect(url_for("user.show_messages"))
+        message.update_post()
+        if post_id:
+            return redirect(url_for("user.show_messages", post_id=post_id))
+        else:
+            return redirect(url_for("user.show_messages"))
     if post_id:
         form.post_url.data = request.host_url + "post" + "/" + str(post_id)
     return render_template(

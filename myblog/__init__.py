@@ -82,7 +82,7 @@ def register_commands(app: Flask):
     @click.option("--post", default=50, help="文章的数量，默认是50篇文章")
     @click.option("--message", default=100, help="留言数量，默认是100个")
     @click.option("--project", default=3, help="项目数量，默认是3个")
-    @click.option("--subscriber", default=30, help="订阅者数量，默认是3个")
+    @click.option("--subscriber", default=3, help="订阅者数量，默认是3个")
     def forge(category, post, message, project, subscriber):
         from myblog.fakes import (
             fake_admin,

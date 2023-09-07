@@ -34,3 +34,27 @@ textarea {
     font-size: small;
 }
 
+.messages-container {
+    padding-left: 21px;
+    padding-right: 21px;
+}
+
+.message-items {
+    display: block;
+    border: 1px solid #ccc;
+    margin-bottom: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding-top: 5px;
+    padding-left: 20px;
+    border-radius: 10px;
+}
+
+.message-metadata-items {
+    font-size: small;
+    font-style: italic;
+}
+
+.message-items p {
+    font-size: large;
+    margin-left: 0;
+}

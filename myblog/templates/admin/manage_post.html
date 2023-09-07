@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 
+{% block style_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/manage.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/manage_posts.css') }}">
+{% endblock style_css %}
+
 {% block page_title %}
 管理文章
 {% endblock page_title %}
@@ -28,8 +33,13 @@
                 <th>删除</th>
             </tr>
             {% for post in posts %}
+            {% set page = request.args.get("page")|int %}
+            {% if not page %}
+            {% set page = 1 %}
+            {% endif %}
             <tr>
-                <td>{{ loop.index }}</td>
+
+                <td>{{ loop.index + (( page - 1) * 10) }}</td>
                 <td><a href="{{ url_for('user.show_post', post_id=post.id) }}">{{ post.title }}</a></td>
                 <td><a href="{{ url_for('user.show_category', category_id=post.category.id) }}">{{ post.category.name
                         }}</a></td>
@@ -51,7 +61,9 @@
             <!-- 变量： 导航按钮数量-->
             <!-- 链接：页码指定页面 -->
             {% for page in range(page_number) %}
-            <li style="display: inline;"><a href="{{ url_for('admin.manage_post', page=page+1, filter=request.args.get('filter'))}}">{{ page+1 }}</a></li>
+            <li style="display: inline;"><a
+                    href="{{ url_for('admin.manage_post', page=page+1, filter=request.args.get('filter'))}}">{{ page+1
+                    }}</a></li>
             {% endfor %}
         </nav>
 

@@ -68,9 +68,11 @@ class MessageForm(FlaskForm):
     post_url = StringField(
         "提及",
         validators=[Optional(), URL(), Length(0, 255)],
-        render_kw={"placeholder": "你想引用或者评论的[本站]文章(选填)"},
+        render_kw={
+            "placeholder": "你想引用或者评论的[本站]文章完整链接(选填)",
+        },
     )
-    submit = SubmitField("留言")
+    submit = SubmitField("留言", render_kw={"style": "color: #EC53B0;"})
 
 
 class SubscribeForm(FlaskForm):

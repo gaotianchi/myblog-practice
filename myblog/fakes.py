@@ -55,9 +55,9 @@ def fake_messages(count=100):
             timestamp=fake.date_time_this_year(),
             post=Post.query.get(random.randint(1, Post.query.count())),
         )
-        message.update_post()
         db.session.add(message)
-    db.session.commit()
+        db.session.commit()
+        message.update_post()
 
 
 def fake_projects(count=3):
@@ -72,7 +72,7 @@ def fake_projects(count=3):
     db.session.commit()
 
 
-def fake_subscribers(count=30):
+def fake_subscribers(count=3):
     for _ in range(count):
         subscriber = Subscriber(
             email=fake.email(),

@@ -62,8 +62,10 @@ class Message(db.Model):
     post = relationship("Post", back_populates="messages")
 
     def update_post(self):
-        if self.post.id:
-            self.post.mention += 1
+        if self.post_id:
+            post = Post.query.get_or_404(self.post_id)
+            post.mention += 1
+            db.session.commit()
 
 
 class Project(db.Model):
