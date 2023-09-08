@@ -48,7 +48,7 @@
         <div class="links">
             <li class="link-item" style="display: inline;"><a href="https://github.com/2022Jean">GitHub</a></li>
             <!-- TODO RSS 功能 -->
-            <li class="link-item" style="display: inline;"><a href="#">RSS</a></li>
+            <!-- <li class="link-item" style="display: inline;"><a href="#">RSS</a></li> -->
             {% if current_user.is_authenticated %}
             <li style="display: inline;"><a href="{{ url_for('auth.logout', next=request.full_puth) }}">登出</a></li>
             {% else %}

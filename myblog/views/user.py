@@ -106,14 +106,13 @@ def show_messages(post_id):
         body = form.body.data
         site = form.site.data
         post_url = form.post_url.data
-
+        post = None
         if post_url:
             import re
 
             if re.match(f"{request.host_url}post/\d+", post_url):
                 post = Post.query.get_or_404(int(post_url.split("/").pop()))
             else:
-                post = None
                 flash(f"如需引用文章，请输入文章链接！例如：{request.host_url}post/7")
 
         message = Message(email=email, body=body, site=site, post=post)

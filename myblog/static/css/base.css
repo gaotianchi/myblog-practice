@@ -17,7 +17,8 @@
   max-width: 50px;
   display: none;
   position: absolute;
-  background-color: #f9f9f9; /* 设置下拉菜单的背景颜色 */
+  background-color: #f9f9f9;
+  /* 设置下拉菜单的背景颜色 */
   min-width: 100px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
@@ -36,7 +37,8 @@
 }
 
 .dropdown-content li a:hover {
-  background-color: #ddd; /* 设置下拉菜单项的悬停背景颜色 */
+  background-color: #ddd;
+  /* 设置下拉菜单项的悬停背景颜色 */
 }
 
 .dropdown:hover .dropdown-content {
@@ -77,6 +79,12 @@ a {
   font-family: "NSimSun";
   margin: 5px;
 
+}
+
+section,
+main {
+  font-family: "NSimSun";
+  font-size: large;
 }
 
 nav {
