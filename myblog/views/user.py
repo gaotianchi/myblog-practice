@@ -48,14 +48,16 @@ def show_posts(page):
 
 @user_bp.route("/post/<int:post_id>", methods=["GET", "POST"])
 def show_post(post_id):
+    posts = Post.query.order_by(Post.timestamp.desc()).all()
+    post = Post.query.get_or_404(post_id)
+    index = posts.index(post)
     has_pre = True
     has_next = True
-    if post_id <= 1:
+    if index == Post.query.count():
         has_pre = False
-    if post_id >= Post.query.count():
+    if index == 0:
         has_next = False
 
-    post = Post.query.get_or_404(post_id)
     message_count = Message.query.filter_by(post_id=post_id).count()
 
     return render_template(
