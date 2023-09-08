@@ -101,7 +101,7 @@ def manage_category():
     return render_template("admin/manage_category.html", categories=categories)
 
 
-@admin_bp.route("/category/new")
+@admin_bp.route("/category/new", methods=["GET", "POST"])
 @login_required
 def new_category():
     form = CategoryForm()
@@ -111,7 +111,7 @@ def new_category():
         db.session.add(category)
         db.session.commit()
         return redirect(url_for("admin.manage_category"))
-    return render_template("admin/new_category", form=form)
+    return render_template("admin/new_category.html", form=form)
 
 
 @admin_bp.route("/category/<int:category_id>/edit", methods=["GET", "POST"])

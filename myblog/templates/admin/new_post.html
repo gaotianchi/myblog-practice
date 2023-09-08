@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block style_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/new_post.css')}}">
+{% endblock style_css %}
+
 {% block page_title %}
 添加新文章
 {% endblock page_title %}
