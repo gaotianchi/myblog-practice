@@ -6,6 +6,7 @@
 下载到本地：
 ```bash
 git clone https://github.com/2022Jean/myblog.git
+cd myblog
 ```
 
 生成假数据：
@@ -19,3 +20,4 @@ flask init
 flask run
 ```
 
+![首页图片](https://github.com/2022Jean/myblog/blob/main/img/home.png)
