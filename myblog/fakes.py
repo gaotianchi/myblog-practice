@@ -21,7 +21,7 @@ def fake_admin():
     db.session.commit()
 
 
-def fake_categories(count=10):
+def fake_categories(count=2):
     category = Category(name="默认")
     db.session.add(category)
 
@@ -34,7 +34,7 @@ def fake_categories(count=10):
             db.session.rollback()
 
 
-def fake_posts(count=50):
+def fake_posts(count=5):
     for _ in range(count):
         post = Post(
             title=fake.sentence(),
@@ -46,7 +46,7 @@ def fake_posts(count=50):
     db.session.commit()
 
 
-def fake_messages(count=100):
+def fake_messages(count=10):
     for _ in range(count):
         message = Message(
             email=fake.email(),
@@ -60,7 +60,7 @@ def fake_messages(count=100):
         message.update_post()
 
 
-def fake_projects(count=3):
+def fake_projects(count=1):
     for _ in range(count):
         project = Project(
             title=fake.sentence(),
@@ -72,7 +72,7 @@ def fake_projects(count=3):
     db.session.commit()
 
 
-def fake_subscribers(count=3):
+def fake_subscribers(count=1):
     for _ in range(count):
         subscriber = Subscriber(
             email=fake.email(),
