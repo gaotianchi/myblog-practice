@@ -33,3 +33,7 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.getenv(
         "DATABASE_URL", prefix + os.path.join(basedir, "data.db")
     )
+    DATABASE_QUERY_TIMEOUT = 0.01
+    SQLALCHEMY_RECORD_QUERIES = True
+
+    LOGS_PATH = os.path.join(basedir, "logs")

@@ -1,14 +1,19 @@
 import click
+import logging
+from logging.handlers import RotatingFileHandler
+import os
 
 from flask import Flask, render_template
 from sqlalchemy import select
 from flask_wtf.csrf import CSRFError
-from myblog.fakes import fake_subscribers
+from flask_sqlalchemy.record_queries import get_recorded_queries
+
 
 from myblog.settings import Config
 from myblog.extensions import db, ckeditor, login_manager, csrf, mail
 from myblog.views import user_bp, admin_bp, auth_bp
 from myblog.models import Admin, Category
+from myblog.fakes import fake_subscribers
 
 
 def create_app():
@@ -20,11 +25,13 @@ def create_app():
     register_commands(app)
     register_template_context(app)
     register_errors(app)
+    register_logging(app)
 
     return app
 
 
 def register_extensions(app: Flask):
+    # 注册拓展
     db.init_app(app)
     ckeditor.init_app(app)
     login_manager.init_app(app)
@@ -33,12 +40,15 @@ def register_extensions(app: Flask):
 
 
 def register_blueprint(app: Flask):
+    # 注册蓝本
     app.register_blueprint(user_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(auth_bp)
 
 
 def register_commands(app: Flask):
+    # 注册命令
+
     @app.cli.command()
     @click.option("--username", prompt=True, help="该用户名用于登录")
     @click.option(
@@ -78,11 +88,11 @@ def register_commands(app: Flask):
         click.echo("完成.")
 
     @app.cli.command()
-    @click.option("--category", default=10, help="分类的数量，默认是10个")
-    @click.option("--post", default=50, help="文章的数量，默认是50篇文章")
-    @click.option("--message", default=100, help="留言数量，默认是100个")
-    @click.option("--project", default=3, help="项目数量，默认是3个")
-    @click.option("--subscriber", default=3, help="订阅者数量，默认是3个")
+    @click.option("--category", default=2, help="分类的数量，默认是2个")
+    @click.option("--post", default=5, help="文章的数量，默认是5篇文章")
+    @click.option("--message", default=10, help="留言数量，默认是10个")
+    @click.option("--project", default=1, help="项目数量，默认是3个")
+    @click.option("--subscriber", default=1, help="订阅者数量，默认是1个")
     def forge(category, post, message, project, subscriber):
         from myblog.fakes import (
             fake_admin,
@@ -139,3 +149,40 @@ def register_errors(app: Flask):
     @app.errorhandler(CSRFError)
     def handle_csrf_error(e):
         return render_template("errors/400.html", description=e.description), 400
+
+
+def register_logging(app: Flask):
+    formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
+
+    file_hander = RotatingFileHandler(
+        filename=os.path.join(app.config["LOGS_PATH"], "default.log"),
+        mode="a",
+        maxBytes=10 * 1024,
+        encoding="UTF-8",
+        backupCount=10,
+    )
+    file_hander.setFormatter(formatter)
+    file_hander.setLevel(logging.INFO)
+
+    app.logger.addHandler(file_hander)
+
+
+def register_hooks(app: Flask):
+    @app.after_request
+    def record_query(response):
+        """
+        检查当下会话中的每一个查询语句，如果查询时间超过了上线则将其写入日志
+        """
+        for query in get_recorded_queries():
+            print(query.duration)
+            if query.duration >= app.config["DATABASE_QUERY_TIMEOUT"]:
+                app.logger.warn(
+                    (
+                        "Context:{}\nSLOW QUERY:{}\nParameters:{}\n" "Duration:{}\n"
+                    ).format(
+                        query.context, query.statement, query.parameters, query.duration
+                    )
+                )
+        return response
