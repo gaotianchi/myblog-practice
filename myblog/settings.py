@@ -26,6 +26,8 @@ class Config:
 
     CKEDITOR_ENABLE_CSRF = True
     CKEDITOR_FILE_UPLOADER = "admin.upload_image"
+    # CKEDITOR_SERVE_LOCAL = True
+    # CKEDITOR_PKG_TYPE = "basic"
 
     BLUELOG_UPLOAD_PATH = os.path.join(basedir, "uploads")
     BLUELOG_ALLOWED_IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "gif"]

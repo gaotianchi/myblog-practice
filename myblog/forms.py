@@ -23,7 +23,7 @@ class LoginForm(FlaskForm):
 
 class PostForm(FlaskForm):
     title = StringField("标题", validators=[DataRequired(), Length(1, 60)])
-    category = SelectField("分类", coerce=int, default=1)
+    category = SelectField("分类", coerce=int, default=1)  # type: ignore
     body = CKEditorField("正文", validators=[DataRequired()])
     submit = SubmitField()
 

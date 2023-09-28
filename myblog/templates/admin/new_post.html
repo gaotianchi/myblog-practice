@@ -24,6 +24,6 @@
 
 {% block scripts %}
 {{ super() }}
-{{ ckeditor.load() }}
+{{ ckeditor.load() }}  <!-- 网页编辑器还有很大的升级空间，ckeditor-5 给人很舒适的体验 -->
 {{ ckeditor.config(name='body') }}
 {% endblock scripts %}
