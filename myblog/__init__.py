@@ -1,9 +1,11 @@
+import os
 import click
+import logging
+from logging.handlers import RotatingFileHandler
 
 from flask import Flask, render_template
 from sqlalchemy import select
 from flask_wtf.csrf import CSRFError
-from myblog.fakes import fake_subscribers
 
 from myblog.settings import Config
 from myblog.extensions import db, ckeditor, login_manager, csrf, mail
@@ -20,6 +22,7 @@ def create_app():
     register_commands(app)
     register_template_context(app)
     register_errors(app)
+    register_logging(app)
 
     return app
 
@@ -90,6 +93,7 @@ def register_commands(app: Flask):
             fake_messages,
             fake_categories,
             fake_projects,
+            fake_subscribers,
         )
 
         db.drop_all()
@@ -139,3 +143,18 @@ def register_errors(app: Flask):
     @app.errorhandler(CSRFError)
     def handle_csrf_error(e):
         return render_template("errors/400.html", description=e.description), 400
+
+
+def register_logging(app: Flask):
+    formatter = logging.Formatter(
+        fmt="[%(asctime)s]{%(pathname)s:%(lineno)d}%(levelname)s-%(message)s"
+    )
+    handler = RotatingFileHandler(
+        filename=os.path.join(app.config["LOGS_PATH"], "myblog.log"),
+        maxBytes=10 * 1024,
+        backupCount=10,
+        encoding="UTF-8",
+    )
+    handler.setFormatter(fmt=formatter)
+    handler.setLevel(logging.INFO)
+    app.logger.addHandler(handler)

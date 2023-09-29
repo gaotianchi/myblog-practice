@@ -33,3 +33,5 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.getenv(
         "DATABASE_URL", prefix + os.path.join(basedir, "data.db")
     )
+
+    LOGS_PATH = os.path.join(basedir, "logs")
