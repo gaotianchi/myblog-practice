@@ -1,4 +1,5 @@
 import re
+import markdown
 from urllib.parse import urlparse, urljoin
 
 from flask import request, redirect, url_for, current_app
@@ -50,3 +51,11 @@ def cleanhtml(raw_html) -> str:
     pattern = re.compile("<.*?>")
     cleantext = re.sub(pattern, "", raw_html)
     return cleantext
+
+
+def markdown_to_html(filename: str) -> str:
+    with open(filename, mode="r", encoding="UTF-8") as f:
+        md_text = f.read()
+    html_text = markdown.markdown(md_text)
+
+    return html_text
