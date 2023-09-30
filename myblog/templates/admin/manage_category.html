@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block style_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/manage.css') }}">
+{% endblock style_css %}
+
+{% block page_title %}
+管理分类
+{% endblock page_title %}
+
+
+{% block content %}
+<a href="{{ url_for('admin.new_category') }}">添加分类</a>
+<div class="categories-items">
+    {% if categories %}
+    
+    <table>
+        <tr>
+            <th>序号</th>
+            <th>名称</th>
+            <th>编辑</th>
+            <th>删除</th>
+        </tr>
+        {% for category in categories %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td><a href="{{ url_for('user.show_category', category_id=category.id) }}">{{ category.name }}</a></td>
+            <td><a href="{{ url_for('admin.edit_category', category_id=category.id) }}">编辑</a></td>
+            <td>
+                <form style="display: inline;" action="{{ url_for('admin.delete_category', category_id=category.id) }}"
+                    method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" onclick="return confirm('确定要删除该分类吗？')">删除</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    
+    {% endif %}
+</div>
+{% endblock content %}

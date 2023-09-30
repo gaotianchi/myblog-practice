@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block style_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project.css') }}">
+{% endblock style_css %}
+
+{% block page_title %}
+项目
+{% endblock page_title %}
+
+
+{% block content %}
+<main>
+    <div class="projects-container">
+        {% if projects %}
+
+        {% for project in projects %}
+        <div class="project-items">
+            <li class="project-item" style="display: inline;">{{ project.timestamp.strftime("%Y/%m/%d") }}</li>
+            <li class="project-item" style="display: inline;"><a href="{{ project.url }}">{{ project.title }}</a></li>
+            <li class="project-item" style="display: inline;">{{ project.body }}</li>
+        </div>
+        {% endfor %}
+
+        {% else %}
+        <p>还没有发布任何项目。</p>
+        {% endif %}
+    </div>
+</main>
+{% endblock content %}

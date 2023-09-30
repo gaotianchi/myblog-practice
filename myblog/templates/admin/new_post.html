@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+<!-- {% block style_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/new_post.css')}}">
+{% endblock style_css %}
+
+{% block page_title %}
+添加新文章
+{% endblock page_title %} -->
+
+{% block main %}
+<form method="post">
+    <div class="mb-3 mt-3">
+        {{ form.title(class="form-control", placeholder="写下文章标题 5-20 个字") }}
+    </div>
+    <div class="mb-3">
+        <div id="editor" class="form-control"></div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            {{ form.category(class="form-select form-select-lg mb-3") }}
+        </div>
+        <div class="col-7">
+
+        </div>
+        <div class="col-2">
+            {{ form.submit(class="btn btn-light btn-lg", value="发布文章") }}
+        </div>
+    </div>
+    {{ form.csrf_token }}
+    {{ form.body }}
+
+</form>
+
+{% endblock main %}
+
+{% block script %}
+<!-- {{ super() }}
+{{ ckeditor.load() }}
+{{ ckeditor.config(name='body') }} -->
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.2/classic/ckeditor.js"></script>
+<!-- <script src="{{ url_for('static', filename='plugin/ckeditor5/build/ckeditor.js')}}"></script> -->
+<script>
+    ClassicEditor
+    // Editor
+        .create(document.querySelector('#editor'))
+        .then(newEditor => {
+            editor = newEditor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    const txtarea = document.getElementById("body");
+    const submitbtn = document.getElementById("submit");
+
+    submitbtn.addEventListener('click', () => {
+        const editorData = editor.getData();
+
+        txtarea.value = editorData;
+    });
+</script>
+
+{% endblock script %}

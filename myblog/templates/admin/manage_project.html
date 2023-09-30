@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+
+{% block style_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/manage.css') }}">
+{% endblock style_css %}
+
+{% block page_title %}
+管理项目
+{% endblock page_title %}
+
+{% block content %}
+<main>
+    <div class="projects-items">
+        <a href="{{ url_for('admin.new_project') }}">添加项目</a>
+        {% if projects %}
+        <table>
+            <tr>
+                <th>序号</th>
+                <th>日期</th>
+                <th>项目名称</th>
+                <th>编辑</th>
+                <th>删除</th>
+            </tr>
+            {% for project in projects %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ project.timestamp.strftime("%Y/%m/%d") }}</td>
+                <td><a href="{{ project.url }}">{{ project.title }}</a></td>
+                <td><a href="{{ url_for('admin.edit_project', project_id=project.id) }}">编辑</a></td>
+                <td>
+                    <form style="display: inline;"
+                        action="{{ url_for('admin.delete_project', project_id=project.id, next=url_for('admin.manage_project')) }}"
+                        method="post">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" onclick="return confirm('确定要删除该项目吗？')">删除</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+
+        {% else %}
+        <p>还没有发布项目</p>
+        {% endif %}
+    </div>
+</main>
+{% endblock content %}

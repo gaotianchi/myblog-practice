@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block style_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/message.css') }}">
+{% endblock style_css %}
+
+{% block page_title %}
+留言板
+{% endblock page_title %}
+
+{% block content %}
+<main>
+
+    <form method="post">
+        {{ form.csrf_token }}
+        <div class="form-items">
+            {{ form.email.label }}
+            {{ form.email }}
+        </div>
+        <div class="form-items">
+            {{ form.body.label }}
+            {{ form.body }}
+        </div>
+        <div class="form-items">
+            {{ form.site.label }}
+            {{ form.site }}
+        </div>
+        <div class="form-items">
+            {{ form.post_url.label }}
+            {{ form.post_url }}
+        </div>
+        <div class="form-items">{{ form.submit }}</div>
+
+
+    </form>
+    <div class="metadata">
+        <li class="meta-item" style="display: inline;"><a href="{{ url_for('user.show_messages') }}">{{ message_count }}条留言</a></li>
+    </div>
+
+    <div class="messages-container">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="message-items">
+            <div class="message-metadata-items">
+                <li class="message-metadata" style="display: inline;">{{ message.timestamp.strftime("%Y/%m/%d") }}</li>
+                {% if message.site %}
+                <li class="message-metadata" style="display: inline;"><a href="{{ message.site }}">个人网址</a>
+                </li>
+                {% endif %}
+                {% if message.post %}
+                <li class="message-metadata" style="display: inline;"><a
+                        href="{{ url_for( 'user.show_post', post_id=message.post.id )}}">{{ message.post.title }}</a>
+                </li>
+                {% endif %}
+            </div>
+            <p>{{ message.body }}</p>
+        </div>
+        {% endfor %}
+
+
+
+        {% else %}
+        <p>还没有任何留言。</p>
+        {% endif %}
+    </div>
+</main>
+
+{% endblock content %}

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block style_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/manage.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/manage_messages.css') }}">
+{% endblock style_css %}
+
+{% block page_title %}
+管理留言
+{% endblock page_title %}
+
+{% block content %}
+<main>
+    <div class="metadata">
+        <li class="meta-item" style="display: inline;">{{ message_count }}<span>条留言</span></li>
+        <!-- <li class="meta-item" style="display: inline;"></li> -->
+        <!-- <li class="meta-item" style="display: inline;"></li> -->
+        <!-- <li class="meta-item" style="display: inline;"></li> -->
+    </div>
+    <div class="messages-items">
+        {% if messages %}
+
+        <table>
+            <tr>
+                <th>序号</th>
+                <th>账户</th>
+                <th>留言</th>
+                <th>提及文章</th>
+                <th>日期</th>
+                <th>删除留言</th>
+            </tr>
+            {% for message in messages %}
+            <tr>
+                {% set page = request.args.get("page")|int %}
+                {% if not page %}
+                {% set page = 1 %}
+                {% endif %}
+                <td>{{ loop.index + (( page - 1) * 10) }}</td>
+                <td>
+                    <li>{{ message.email }}</li>
+                    <li>{% if message.site %}<a href="{{ message.site }}">{{ message.site }}</a>{% else %}无{% endif %}</li>
+                </td>
+                
+                <td>{{ message.body }}</td>
+                <td>{% if message.post.id %}<a href="{{ url_for('user.show_post', post_id=message.post.id) }}">{{
+                        message.post.title }}</a>{% else %}无{% endif %}</td>
+                <td>{{ message.timestamp.strftime("%Y/%m/%d") }}</td>
+                <td>
+                    <form style="display: inline;"
+                        action="{{ url_for('admin.delete_message', message_id=message.id, next=url_for('admin.manage_message')) }}"
+                        method="post">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" onclick="return confirm('确定要删除该留言吗？')">删除</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <nav class="pagination">
+            <!-- 变量： 导航按钮数量-->
+            <!-- 链接：页码指定页面 -->
+            {% for page in range(page_number) %}
+            <li style="display: inline;"><a href="{{ url_for('admin.manage_message', page=page+1)}}">{{ page+1 }}</a></li>
+            {% endfor %}
+        </nav>
+        {% else %}
+        <p>还没有留言</p>
+        {% endif %}
+    </div>
+</main>
+{% endblock content %}
