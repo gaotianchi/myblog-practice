@@ -1,7 +1,7 @@
 import os
 
 
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, send_from_directory, url_for
 
 
 from myblog.settings import Config
@@ -36,3 +36,9 @@ def posts():
         posts.append({"title": file, "url": url_for("post", name=file)})
 
     return render_template("posts.html", posts=posts)
+
+
+@app.route("/images/<path:image_filename>")
+def image(image_filename):
+    image_folder = os.path.join(data_path, "images")
+    return send_from_directory(image_folder, image_filename)
