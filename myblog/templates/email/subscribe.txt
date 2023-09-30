@@ -1,5 +1,0 @@
-高天驰的个人博客发布新文章：{{ post.title }}
-
-{{ body }}...
-
-点击链接阅读详情：{{ url_for("user.show_post", post_id=post.id, _external=True) }}
