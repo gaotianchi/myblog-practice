@@ -2,6 +2,7 @@
 .trash
 .venv
 data.db
+data
 uploads/*
 # Byte-compiled / optimized / DLL files
 __pycache__/
