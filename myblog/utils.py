@@ -21,3 +21,15 @@ def format_image_url(text) -> str:
 
     result = re.sub(pattern, replace, text)
     return result
+
+
+def get_ymal(text: str) -> str:
+    pattern = r"---\n(.+?)\n---"
+
+    matches = re.findall(pattern, text, re.DOTALL)
+
+    return matches[0] if matches else ""
+
+
+if __name__ == "__main__":
+    pass
