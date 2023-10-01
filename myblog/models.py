@@ -26,10 +26,12 @@ class MyEventHandler(FileSystemEventHandler):
         if event.is_directory:
             return None
         elif (event.event_type == "created") or (event.event_type == "modified"):
-            conn.sadd("modified", event.src_path)
+            if str(event.src_path).endswith(".md"):
+                conn.sadd("modified", event.src_path)
 
         elif event.event_type == "deleted":
-            conn.sadd("deleted", event.src_path)
+            if str(event.src_path).endswith(".md"):
+                conn.sadd("deleted", event.src_path)
 
 
 class Watcher:
