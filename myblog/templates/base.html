@@ -27,7 +27,7 @@
     {% block header %}
     <div class="row">
       <div class="col">
-        <ul class="nav nav-tabs">
+        <ul class="nav">
           <li class="nav-item"><a class="nav-link active" aria-current="page" href="{{ url_for('home')}}">主页</a>
           </li>
           <li class="nav-item"><a class="nav-link" href="{{ url_for('posts') }}">文章</a></li>
@@ -58,25 +58,6 @@
   {% block script %}
 
   {% endblock script %}
-  <script>
-    // Get all the nav items
-    const navItems = document.querySelectorAll('.nav-item');
-
-    // Add click event listener to each nav item
-    navItems.forEach(navItem => {
-      navItem.addEventListener('click', () => {
-        // Remove 'active' class from all nav items
-        navItems.forEach(item => {
-          item.querySelector('a').classList.remove('active');
-          item.querySelector('a').removeAttribute('aria-current');
-        });
-
-        // Add 'active' class and 'aria-current' attribute to the clicked nav item
-        navItem.querySelector('a').classList.add('active');
-        navItem.querySelector('a').setAttribute('aria-current', 'page');
-      });
-    });
-  </script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
     integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
     crossorigin="anonymous"></script>
