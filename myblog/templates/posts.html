@@ -4,11 +4,19 @@
 {% block main %}
 
 {% if posts %}
-<ol class="list-group list-group-numbered"></ol>
-{% for post in posts %}
-    <li class="list-group-item"><a href="{{ post.url }}">{{ post.title }}</a></li>
-{% endfor %}
-</ol>
+
+<ul class="list-group">
+    {% for post in posts %}
+    <li class="list-group-item">
+        <div class="row">
+            <div class="col-3">{{ post.date }}</div>
+            <div class="col-9"><a href="#">{{ post.title }}</a></div>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>还没有发布任何文章</p>
 {% endif %}
 
 {% endblock main %}

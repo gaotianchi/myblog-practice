@@ -31,5 +31,12 @@ def get_ymal(text: str) -> str:
     return matches[0] if matches else ""
 
 
+def get_content(text: str) -> str:
+    pattern = r"---\n.*?\n---\n(.*)"
+    match = re.search(pattern, text, re.DOTALL)
+
+    return match.group(1) if match else ""
+
+
 if __name__ == "__main__":
     pass
