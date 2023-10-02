@@ -4,12 +4,17 @@ import markdown
 from flask import url_for
 
 
-def md_to_html(filename: str) -> str:
+def md_file_to_html(filename: str) -> str:
     with open(filename, mode="r", encoding="UTF-8") as f:
         md = format_image_url(f.read())
     html = markdown.markdown(md)
 
     return html
+
+
+def md_content_to_html(text):
+    result = format_image_url(text)
+    return markdown.markdown(result)
 
 
 def format_image_url(text) -> str:

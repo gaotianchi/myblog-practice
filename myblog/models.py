@@ -10,7 +10,7 @@ from watchdog.events import FileSystemEventHandler
 from apscheduler.schedulers.background import BackgroundScheduler
 
 
-from myblog.utils import get_content, get_ymal, md_to_html
+from myblog.utils import get_content, get_ymal, md_content_to_html
 
 POOL = redis.ConnectionPool(
     host="127.0.0.1", port=6379, max_connections=100, decode_responses=True
@@ -176,7 +176,7 @@ class Post:
         self._author = pipe.get(f"{self._title}:author")
         self._category = pipe.get(f"{self._title}:category")
         self._tags = pipe.smembers(f"{self._title}:tags")
-        self._path = pipe.smembers(f"{self._title}:path")
+        self._path = pipe.get(f"{self._title}:path")
 
         pipe.execute()
         self._date = self.__formated_date()
@@ -200,4 +200,4 @@ class Post:
         with open(self._path, mode="r", encoding="UTF-8") as f:
             md = f.read()
 
-        return md_to_html(get_content(md))
+        return md_content_to_html(get_content(md))

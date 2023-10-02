@@ -9,7 +9,7 @@ from flask import Flask, render_template, send_from_directory, url_for, request
 
 from myblog.models import POOL, Post
 from myblog.settings import Config
-from myblog.utils import md_to_html
+from myblog.utils import md_file_to_html
 
 conn = redis.Redis(connection_pool=POOL)
 app = Flask("myblog")
@@ -34,7 +34,7 @@ def home():
     filename = os.path.join(data_path, "home.md")
     if not os.path.exists(filename):
         return render_template("base.html", content="还没有编写主页页面")
-    content = md_to_html(filename)
+    content = md_file_to_html(filename)
     return render_template("base.html", content=content)
 
 
@@ -56,7 +56,9 @@ def posts():
         case "notrecent":
             desc = False
 
-    items = conn.zrange(name="recently", start=0, end=-1, desc=desc, withscores=True)
+    items = conn.zrange(
+        name="post:recently", start=0, end=-1, desc=desc, withscores=True
+    )
 
     posts = []
     for item in items:
