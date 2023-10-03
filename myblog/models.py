@@ -24,28 +24,30 @@ class MyEventHandler(FileSystemEventHandler):
         super().__init__()
 
     def on_any_event(self, event):
-        filename = os.path.basename(event.src_path)
         if event.is_directory:
             return None
         elif (event.event_type == "created") or (event.event_type == "modified"):
-            if str(event.src_path).endswith(".md") and filename != "home.md":
+            if str(event.src_path).endswith(".md"):
                 conn.sadd("modified", event.src_path)
 
         elif event.event_type == "deleted":
-            if str(event.src_path).endswith(".md") and filename != "home.md":
+            if str(event.src_path).endswith(".md"):
                 conn.sadd("deleted", event.src_path)
 
 
 class Watcher:
-    def __init__(self, app: Flask):
+    def __init__(self, path: str, app: Flask):
         self.observer = Observer()
         self.app = app
+        self.path = path
 
     def run(self):
         self.app.logger.info("启动文件监视器")
         event_handler = MyEventHandler()
         self.observer.schedule(
-            event_handler, self.app.config["WORKSPACE"], recursive=True
+            event_handler,
+            self.path,
+            recursive=True,
         )
         self.observer.start()
 
